@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.vite/
+*.log
+
+# Local source copies are kept outside the public website assets.
+CV_2026.pdf
+S/
+
+# Unrelated local projects and storage in the workspace root.
+HDD 512gb/
