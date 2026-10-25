@@ -29,6 +29,7 @@ import {
   Sun,
   Terminal,
   Upload,
+  UserRound,
   X,
   Zap,
 } from 'lucide-react'
@@ -62,6 +63,14 @@ const projectCategories: ProjectFilter[] = [
 
 const projectStatuses: StatusFilter[] = ['All', 'Completed', 'In progress', 'Planned', 'Technical documentation']
 const certificateCategories: CertificateFilter[] = ['All', 'Linux & System Administration', 'Cybersecurity', 'Networking', 'Technical Training', 'Design Tools']
+const dashboardNav = [
+  { label: 'Overview', href: '#overview', icon: <HardDrive size={16} /> },
+  { label: 'Projects', href: '#projects', icon: <Box size={16} /> },
+  { label: 'Skills', href: '#skills', icon: <Terminal size={16} /> },
+  { label: 'Certificates', href: '#certifications', icon: <Award size={16} /> },
+  { label: 'Experience', href: '#experience', icon: <Network size={16} /> },
+  { label: 'Organizations', href: '#organizations', icon: <BookOpen size={16} /> },
+]
 
 function App() {
   const [content, setContent] = useState<PortfolioContent>(() => loadPortfolioContent())
@@ -138,6 +147,24 @@ function App() {
   }
 
   const toggleTheme = () => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+
+  return <PortfolioDashboard
+    content={content}
+    theme={theme}
+    toggleTheme={toggleTheme}
+    menuOpen={menuOpen}
+    setMenuOpen={setMenuOpen}
+    projectFilter={projectFilter}
+    setProjectFilter={setProjectFilter}
+    statusFilter={statusFilter}
+    setStatusFilter={setStatusFilter}
+    certificateFilter={certificateFilter}
+    setCertificateFilter={setCertificateFilter}
+    filteredProjects={filteredProjects}
+    filteredCertificates={filteredCertificates}
+    selectedProject={selectedProject}
+    setSelectedProject={setSelectedProject}
+  />
 
   return (
     <div className="site-shell">
@@ -350,9 +377,139 @@ function App() {
         </div>
       </footer>
 
-      {selectedProject && <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
+      {selectedProject && <ProjectModal project={selectedProject!} onClose={() => setSelectedProject(null)} />}
     </div>
   )
+}
+
+type PortfolioDashboardProps = {
+  content: PortfolioContent
+  theme: Theme
+  toggleTheme: () => void
+  menuOpen: boolean
+  setMenuOpen: (open: boolean) => void
+  projectFilter: ProjectFilter
+  setProjectFilter: (filter: ProjectFilter) => void
+  statusFilter: StatusFilter
+  setStatusFilter: (filter: StatusFilter) => void
+  certificateFilter: CertificateFilter
+  setCertificateFilter: (filter: CertificateFilter) => void
+  filteredProjects: Project[]
+  filteredCertificates: Certificate[]
+  selectedProject: Project | null
+  setSelectedProject: (project: Project | null) => void
+}
+
+function PortfolioDashboard({
+  content,
+  theme,
+  toggleTheme,
+  menuOpen,
+  setMenuOpen,
+  projectFilter,
+  setProjectFilter,
+  statusFilter,
+  setStatusFilter,
+  certificateFilter,
+  setCertificateFilter,
+  filteredProjects,
+  filteredCertificates,
+  selectedProject,
+  setSelectedProject,
+}: PortfolioDashboardProps) {
+  const [activeDashboardSection, setActiveDashboardSection] = useState('overview')
+  const { portfolioConfig, certifications, experience, organizations } = content
+  const manageHref = `${import.meta.env.BASE_URL}?manage=1`
+
+  const navigateTo = (href: string) => {
+    setActiveDashboardSection(href.slice(1))
+    setMenuOpen(false)
+  }
+
+  return <div className="dashboard-app">
+    <aside className={`dashboard-sidebar ${menuOpen ? 'is-open' : ''}`}>
+      <div className="dashboard-brand">
+        <span className="brand-mark">FT</span>
+        <div><strong>floreetha<span>.</span></strong><small>portfolio OS</small></div>
+      </div>
+      <div className="dashboard-profile">
+        <div className="dashboard-avatar">FT</div>
+        <strong>{portfolioConfig.name}</strong>
+        <span>{portfolioConfig.shortHeadline}</span>
+        <small><span className="status-dot" /> Available for connections</small>
+      </div>
+      <nav className="dashboard-nav" aria-label="Portfolio dashboard navigation">
+        <span className="dashboard-nav-label">Workspace</span>
+        {dashboardNav.map((item) => <a className={activeDashboardSection === item.href.slice(1) ? 'active' : ''} href={item.href} key={item.href} onClick={() => navigateTo(item.href)}>{item.icon}<span>{item.label}</span></a>)}
+      </nav>
+      <div className="dashboard-sidebar-bottom">
+        <a href={manageHref}><Zap size={16} /><span>Manage content</span></a>
+        <button type="button" onClick={toggleTheme}><span className="dashboard-theme-icon">{theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}</span><span>{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span></button>
+      </div>
+    </aside>
+    {menuOpen && <button className="dashboard-scrim" type="button" aria-label="Close sidebar" onClick={() => setMenuOpen(false)} />}
+    <button className="dashboard-mobile-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open dashboard navigation"><Menu size={20} /></button>
+
+    <main className="dashboard-main">
+      <header className="dashboard-topbar">
+        <div><span className="dashboard-breadcrumb">Workspace / Portfolio dashboard</span><span className="dashboard-topbar-title">Systems & infrastructure profile</span></div>
+        <div className="dashboard-topbar-actions">
+          {portfolioConfig.cvPath && <a className="dashboard-icon-link" href={portfolioConfig.cvPath} download title="Download CV"><Download size={17} /></a>}
+          {portfolioConfig.contact.linkedin && <a className="dashboard-icon-link" href={portfolioConfig.contact.linkedin} target="_blank" rel="noreferrer" title="Open LinkedIn"><ExternalLink size={17} /></a>}
+          <a className="dashboard-user-chip" href={`mailto:${portfolioConfig.contact.email ?? ''}`}><span className="status-dot" />{portfolioConfig.contact.email ? 'Open to connect' : 'Contact unavailable'}</a>
+        </div>
+      </header>
+
+      <div className="dashboard-content">
+        <section className="dashboard-welcome" id="overview">
+          <div className="dashboard-welcome-copy">
+            <span className="eyebrow"><span className="status-dot" /> Live profile · {portfolioConfig.location}</span>
+            <h1>Hi, I&apos;m <em>Floreetha.</em></h1>
+            <p>{portfolioConfig.headline}. This dashboard collects the projects, training, and experiences shaping my path through networking, Linux, telecommunications, and IT infrastructure.</p>
+            <div className="dashboard-actions"><a className="button button-primary" href="#projects">Explore work <ArrowDownRight size={16} /></a>{portfolioConfig.contact.email && <a className="button button-secondary" href={`mailto:${portfolioConfig.contact.email}`}>Get in touch <Mail size={16} /></a>}</div>
+          </div>
+          <div className="dashboard-welcome-visual"><NetworkVisual /></div>
+        </section>
+
+        <section className="dashboard-stat-grid" aria-label="Portfolio summary">
+          <article className="dashboard-stat-card"><span className="dashboard-stat-icon blue"><Box size={18} /></span><div><strong>{projects.length}</strong><span>Selected projects</span></div><small>Build / document / learn</small></article>
+          <article className="dashboard-stat-card"><span className="dashboard-stat-icon green"><Award size={18} /></span><div><strong>{certifications.length}</strong><span>Training records</span></div><small>Evidence-led profile</small></article>
+          <article className="dashboard-stat-card"><span className="dashboard-stat-icon yellow"><Network size={18} /></span><div><strong>{experience.length}</strong><span>Experience entries</span></div><small>Closer to the physical layer</small></article>
+          <article className="dashboard-stat-card"><span className="dashboard-stat-icon purple"><Terminal size={18} /></span><div><strong>{organizations.length}</strong><span>Communities</span></div><small>Coordinate / contribute</small></article>
+        </section>
+
+        <section className="dashboard-section" id="projects">
+          <div className="dashboard-section-heading"><div><span className="dashboard-section-kicker">01 / Delivery log</span><h2>Projects & technical work</h2><p>Practical experiments across applications, containers, monitoring, and telecommunications.</p></div><a className="dashboard-text-link" href="#projects">View workspace <ArrowUpRight size={15} /></a></div>
+          <div className="dashboard-filter-stack"><div className="filter-row"><span className="filter-label">Category</span>{projectCategories.map((category) => <FilterButton active={projectFilter === category} key={category} onClick={() => setProjectFilter(category)}>{category}</FilterButton>)}</div><div className="filter-row"><span className="filter-label">Status</span>{projectStatuses.map((status) => <FilterButton active={statusFilter === status} key={status} onClick={() => setStatusFilter(status)}>{status}</FilterButton>)}</div></div>
+          <div className="dashboard-projects-grid">{filteredProjects.map((project) => <ProjectCard key={project.id} project={project} onOpen={() => setSelectedProject(project)} />)}</div>
+          {filteredProjects.length === 0 && <EmptyState text="No projects match these filters yet." />}
+        </section>
+
+        <section className="dashboard-section dashboard-section-tinted" id="skills">
+          <div className="dashboard-section-heading"><div><span className="dashboard-section-kicker">02 / Capability map</span><h2>Technical toolkit</h2><p>Exposure is grouped by how each skill currently appears in the work.</p></div><span className="dashboard-live-label"><span className="status-dot" /> Continuously learning</span></div>
+          <div className="dashboard-skills-grid">{skillGroups.map((group) => <SkillGroupCard group={group} key={group.name} />)}</div>
+          <div className="dashboard-tool-strip"><span>Working environment</span><strong>Docker Desktop</strong><strong>VS Code</strong><strong>Microsoft Excel</strong><strong>MikroTik WinBox</strong></div>
+        </section>
+
+        <section className="dashboard-section" id="certifications">
+          <div className="dashboard-section-heading"><div><span className="dashboard-section-kicker">03 / Evidence</span><h2>Certificates & training</h2><p>Verified files and credential actions stay connected to the original source.</p></div><span className="dashboard-count-label">{filteredCertificates.length} shown</span></div>
+          <div className="filter-row dashboard-certificate-filters"><span className="filter-label">Filter</span>{certificateCategories.map((category) => <FilterButton active={certificateFilter === category} key={category} onClick={() => setCertificateFilter(category)}>{category}</FilterButton>)}</div>
+          <div className="dashboard-certificates-grid">{filteredCertificates.map((certificate) => <CertificateCard certificate={certificate} key={certificate.id} />)}</div>
+        </section>
+
+        <section className="dashboard-split-grid">
+          <div className="dashboard-section dashboard-section-card" id="experience"><div className="dashboard-section-heading compact"><div><span className="dashboard-section-kicker">04 / Timeline</span><h2>Experience</h2></div></div><div className="dashboard-timeline">{experience.map((item) => <ExperienceCard item={item} key={item.title} />)}</div></div>
+          <div className="dashboard-section dashboard-section-card" id="organizations"><div className="dashboard-section-heading compact"><div><span className="dashboard-section-kicker">05 / Communities</span><h2>Organizations</h2></div></div><div className="dashboard-org-list">{organizations.map((organization, index) => <article className="dashboard-org-row" key={organization.name}><span className="dashboard-org-number">0{index + 1}</span><div><strong>{organization.name}</strong><span>{organization.period}</span><p>{organization.roles.join(' · ')}</p></div></article>)}</div></div>
+        </section>
+
+        <section className="dashboard-section dashboard-section-tinted" id="contact">
+          <div className="dashboard-contact-grid"><div><span className="dashboard-section-kicker">06 / Contact channel</span><h2>Let&apos;s connect around the systems behind connected technology.</h2><p>Open to thoughtful conversations about networking, IT infrastructure, system administration, and technology.</p></div><div className="dashboard-contact-actions">{portfolioConfig.contact.email && <a className="button button-primary" href={`mailto:${portfolioConfig.contact.email}`}>Send an email <Mail size={16} /></a>}{portfolioConfig.contact.linkedin && <a className="button button-secondary" href={portfolioConfig.contact.linkedin} target="_blank" rel="noreferrer">Visit LinkedIn <ExternalLink size={16} /></a>}<a className="dashboard-manage-link" href={manageHref}><Zap size={15} /> Update portfolio content</a></div></div>
+        </section>
+      </div>
+      <footer className="dashboard-footer"><span>© {new Date().getFullYear()} Floreetha Tiara Cantika</span><span>React + TypeScript · GitHub Pages</span></footer>
+    </main>
+    {selectedProject && <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
+  </div>
 }
 
 function ContentManager({ content, onChange }: { content: PortfolioContent; onChange: (content: PortfolioContent) => void }) {
@@ -521,8 +678,25 @@ function ContentManager({ content, onChange }: { content: PortfolioContent; onCh
     }
   }
 
-  return <main className="manager-page">
-    <div className="content-width manager-shell">
+  return <main className="manager-dashboard">
+    <aside className="manager-sidebar">
+      <div className="dashboard-brand"><span className="brand-mark">FT</span><div><strong>floreetha<span>.</span></strong><small>content studio</small></div></div>
+      <div className="manager-sidebar-label">Admin workspace</div>
+      <nav className="manager-nav" aria-label="Content manager navigation">
+        <a className="active" href="#manager-overview"><HardDrive size={16} /> Overview</a>
+        <a href="#manager-profile"><UserRound size={16} /> Profile & CV</a>
+        <a href="#manager-certificates"><Award size={16} /> Certificates</a>
+        <a href="#manager-experience"><Network size={16} /> Experience</a>
+        <a href="#manager-organizations"><BookOpen size={16} /> Organizations</a>
+        <a href="#manager-storage"><Upload size={16} /> Storage</a>
+      </nav>
+      <div className="manager-sidebar-bottom"><a href={import.meta.env.BASE_URL}><ArrowLeft size={16} /> Public portfolio</a><span><span className="status-dot" /> Saved locally</span></div>
+    </aside>
+    <div className="manager-main">
+      <header className="manager-topbar" id="manager-overview"><div><span className="dashboard-breadcrumb">Admin / Content studio</span><h1>Portfolio control center</h1></div><a className="button button-secondary" href={import.meta.env.BASE_URL}>View public site <ExternalLink size={16} /></a></header>
+      <div className="manager-dashboard-content">
+        <div className="manager-dashboard-stats"><article><span><HardDrive size={17} /></span><strong>{draft.portfolioConfig.contact.email ? 'Ready' : 'Missing'}</strong><small>Contact profile</small></article><article><span><Award size={17} /></span><strong>{draft.certifications.length}</strong><small>Certificates</small></article><article><span><Network size={17} /></span><strong>{draft.experience.length}</strong><small>Experience entries</small></article><article><span><BookOpen size={17} /></span><strong>{draft.organizations.length}</strong><small>Organizations</small></article></div>
+        <div className="content-width manager-shell">
       <div className="manager-header">
         <div>
           <span className="eyebrow"><span className="status-dot" /> Local content manager</span>
@@ -537,7 +711,7 @@ function ContentManager({ content, onChange }: { content: PortfolioContent; onCh
         {error && <span className="manager-error"><CircleHelp size={15} /> {error}</span>}
       </div>
 
-      <section className="manager-panel">
+      <section className="manager-panel" id="manager-profile">
         <div className="manager-panel-head"><div><span className="eyebrow">01 / Profile links</span><h2>Contact and CV</h2></div><Save size={19} /></div>
         <div className="manager-form-grid">
           <label className="manager-field"><span>Email</span><input type="email" value={draft.portfolioConfig.contact.email ?? ''} onChange={(event) => updateContact('email', event.target.value)} /></label>
@@ -549,7 +723,7 @@ function ContentManager({ content, onChange }: { content: PortfolioContent; onCh
         </div>
       </section>
 
-      <section className="manager-panel">
+      <section className="manager-panel" id="manager-certificates">
         <div className="manager-panel-head"><div><span className="eyebrow">02 / Certificates</span><h2>Add a certificate</h2></div><Plus size={19} /></div>
         <div className="manager-form-grid">
           <label className="manager-field"><span>Name *</span><input value={certificateName} onChange={(event) => setCertificateName(event.target.value)} placeholder="Official certificate name" /></label>
@@ -564,7 +738,7 @@ function ContentManager({ content, onChange }: { content: PortfolioContent; onCh
         <button className="button button-secondary" type="button" onClick={addCertificate}>Add certificate <Plus size={16} /></button>
       </section>
 
-      <section className="manager-panel">
+      <section className="manager-panel" id="manager-experience">
         <div className="manager-panel-head"><div><span className="eyebrow">03 / Experience</span><h2>Add experience</h2></div><Plus size={19} /></div>
         <div className="manager-form-grid">
           <label className="manager-field"><span>Title *</span><input value={experienceTitle} onChange={(event) => setExperienceTitle(event.target.value)} placeholder="Role or activity" /></label>
@@ -577,7 +751,7 @@ function ContentManager({ content, onChange }: { content: PortfolioContent; onCh
         <button className="button button-secondary" type="button" onClick={addExperience}>Add experience <Plus size={16} /></button>
       </section>
 
-      <section className="manager-panel">
+      <section className="manager-panel" id="manager-organizations">
         <div className="manager-panel-head"><div><span className="eyebrow">04 / Organizations</span><h2>Add organization</h2></div><Plus size={19} /></div>
         <div className="manager-form-grid">
           <label className="manager-field"><span>Name *</span><input value={organizationName} onChange={(event) => setOrganizationName(event.target.value)} placeholder="Organization name" /></label>
@@ -587,7 +761,7 @@ function ContentManager({ content, onChange }: { content: PortfolioContent; onCh
         <button className="button button-secondary" type="button" onClick={addOrganization}>Add organization <Plus size={16} /></button>
       </section>
 
-      <section className="manager-panel manager-tools-panel">
+      <section className="manager-panel manager-tools-panel" id="manager-storage">
         <div className="manager-panel-head"><div><span className="eyebrow">05 / Storage</span><h2>Save or move your content</h2></div><Upload size={19} /></div>
         <div className="manager-stats"><span>{draft.certifications.length} certificates</span><span>{draft.experience.length} experience entries</span><span>{draft.organizations.length} organizations</span></div>
         <div className="manager-actions">
@@ -597,6 +771,8 @@ function ContentManager({ content, onChange }: { content: PortfolioContent; onCh
           <button className="button button-secondary" type="button" onClick={resetContent}>Reset local content</button>
         </div>
       </section>
+        </div>
+      </div>
     </div>
   </main>
 }
