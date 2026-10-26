@@ -47,6 +47,7 @@ import {
   type SkillGroup,
 } from './data/portfolio'
 import { loadPortfolioContent, normalizePortfolioContent, readFileAsDataUrl, resetPortfolioContent, savePortfolioContent, type PortfolioContent } from './data/portfolioStore'
+import { PublicPortfolio } from './PublicPortfolio'
 
 type Theme = 'dark' | 'light'
 type ProjectFilter = 'All' | ProjectCategory
@@ -75,6 +76,8 @@ const dashboardNav = [
 function App() {
   const [content, setContent] = useState<PortfolioContent>(() => loadPortfolioContent())
   const [theme, setTheme] = useState<Theme>(() => {
+    const requested = new URLSearchParams(window.location.search).get('theme')
+    if (requested === 'light' || requested === 'dark') return requested
     const saved = window.localStorage.getItem('floreetha-theme') as Theme | null
     return saved === 'light' ? 'light' : 'dark'
   })
@@ -89,7 +92,7 @@ function App() {
   const experience = content.experience
   const organizations = content.organizations
   const manageMode = new URLSearchParams(window.location.search).get('manage') === '1'
-  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '')
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
   const updateContent = (nextContent: PortfolioContent) => {
     savePortfolioContent(nextContent)
@@ -141,30 +144,14 @@ function App() {
     return <ContentManager content={content} onChange={updateContent} />
   }
 
-  const currentPath = window.location.pathname.replace(/\/$/, '')
+  const currentPath = window.location.pathname.replace(/\/$/, '') || '/'
   if (currentPath !== basePath) {
     return <NotFoundPage />
   }
 
   const toggleTheme = () => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
 
-  return <PortfolioDashboard
-    content={content}
-    theme={theme}
-    toggleTheme={toggleTheme}
-    menuOpen={menuOpen}
-    setMenuOpen={setMenuOpen}
-    projectFilter={projectFilter}
-    setProjectFilter={setProjectFilter}
-    statusFilter={statusFilter}
-    setStatusFilter={setStatusFilter}
-    certificateFilter={certificateFilter}
-    setCertificateFilter={setCertificateFilter}
-    filteredProjects={filteredProjects}
-    filteredCertificates={filteredCertificates}
-    selectedProject={selectedProject}
-    setSelectedProject={setSelectedProject}
-  />
+  return <PublicPortfolio content={content} theme={theme} toggleTheme={toggleTheme} />
 
   return (
     <div className="site-shell">
