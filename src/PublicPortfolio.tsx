@@ -50,8 +50,8 @@ type ProjectFilter = 'All' | ProjectCategory
 type StatusFilter = 'All' | ProjectStatus
 type CertificateFilter = 'All' | Certificate['category']
 
-const projectCategories: ProjectFilter[] = ['All', 'Networking & Telecommunications', 'Systems & Infrastructure', 'Containerization & DevOps', 'Monitoring Systems']
-const projectStatuses: StatusFilter[] = ['All', 'Completed', 'In progress', 'Planned', 'Technical documentation']
+const projectCategories: ProjectFilter[] = ['All', 'Networking & Telecommunications', 'Systems & Infrastructure', 'Containerization & DevOps']
+const projectStatuses: StatusFilter[] = ['All', 'Completed', 'Technical documentation']
 const certificateCategories: CertificateFilter[] = ['All', 'Linux & System Administration', 'Cybersecurity', 'Networking', 'Technical Training', 'Design Tools']
 const skillLevels: SkillLevel[] = ['Used in Projects', 'Familiar With', 'Currently Learning']
 
@@ -165,7 +165,7 @@ function StatusBadge({ status }: { status: ProjectStatus }) {
 }
 
 function PortfolioProjectCard({ project, onOpen }: { project: Project; onOpen: () => void }) {
-  return <article className={`project-card ${project.featured ? 'featured' : ''}`}><div className="project-visual">{project.id === 'flask-traefik' ? <ArchitectureMini /> : project.id === 'kpi-monitoring' ? <KpiMini /> : <OtdrMini />}<span className="project-id">{project.eyebrow.split(' / ')[0]}</span></div><div className="project-card-body"><div className="project-card-topline"><span className="project-category">{project.category}</span><StatusBadge status={project.status} /></div><h3>{project.title}</h3><p>{project.summary}</p><div className="tag-list">{project.stack.slice(0, 4).map((item) => <span key={item}>{item}</span>)}</div><button className="card-link" type="button" onClick={onOpen}>View details <ArrowUpRight size={15} /></button></div></article>
+  return <article className={`project-card ${project.featured ? 'featured' : ''}`}><div className="project-visual">{project.id === 'flask-traefik' ? <ArchitectureMini /> : <OtdrMini />}<span className="project-id">{project.eyebrow.split(' / ')[0]}</span></div><div className="project-card-body"><div className="project-card-topline"><span className="project-category">{project.category}</span><StatusBadge status={project.status} /></div><h3>{project.title}</h3><p>{project.summary}</p><div className="tag-list">{project.stack.slice(0, 4).map((item) => <span key={item}>{item}</span>)}</div><button className="card-link" type="button" onClick={onOpen}>View details <ArrowUpRight size={15} /></button></div></article>
 }
 
 function GroupedSkillCard({ group }: { group: SkillGroup }) {
@@ -201,10 +201,6 @@ function DiagramNode({ x, y, width, height, icon, title, detail, accent }: { x: 
 
 function ArchitectureMini() {
   return <div className="mini-diagram architecture-mini"><div className="mini-client">browser</div><div className="mini-arrow">→</div><div className="mini-proxy">traefik</div><div className="mini-arrow">→</div><div className="mini-backends"><span>flask 1</span><span>flask 2</span><span>flask 3</span></div></div>
-}
-
-function KpiMini() {
-  return <div className="mini-diagram kpi-mini"><div className="kpi-bars"><span style={{ height: '38%' }} /><span style={{ height: '62%' }} /><span style={{ height: '48%' }} /><span style={{ height: '80%' }} /><span style={{ height: '68%' }} /></div><div className="kpi-alert">early warning</div><div className="mini-grid-lines" /></div>
 }
 
 function OtdrMini() {

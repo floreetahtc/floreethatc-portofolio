@@ -54,15 +54,9 @@ type ProjectFilter = 'All' | ProjectCategory
 type StatusFilter = 'All' | ProjectStatus
 type CertificateFilter = 'All' | Certificate['category']
 
-const projectCategories: ProjectFilter[] = [
-  'All',
-  'Networking & Telecommunications',
-  'Systems & Infrastructure',
-  'Containerization & DevOps',
-  'Monitoring Systems',
-]
+const projectCategories: ProjectFilter[] = ['All', 'Networking & Telecommunications', 'Systems & Infrastructure', 'Containerization & DevOps']
 
-const projectStatuses: StatusFilter[] = ['All', 'Completed', 'In progress', 'Planned', 'Technical documentation']
+const projectStatuses: StatusFilter[] = ['All', 'Completed', 'Technical documentation']
 const certificateCategories: CertificateFilter[] = ['All', 'Linux & System Administration', 'Cybersecurity', 'Networking', 'Technical Training', 'Design Tools']
 const dashboardNav = [
   { label: 'Overview', href: '#overview', icon: <HardDrive size={16} /> },
@@ -787,7 +781,7 @@ function StatusBadge({ status }: { status: ProjectStatus }) {
 function ProjectCard({ project, onOpen }: { project: Project; onOpen: () => void }) {
   return <article className={`project-card ${project.featured ? 'featured' : ''}`}>
     <div className="project-visual">
-      {project.screenshot ? <img className="project-screenshot" src={project.screenshot} alt={`${project.title} screenshot`} /> : project.id === 'flask-traefik' ? <ArchitectureMini /> : project.id === 'kpi-monitoring' ? <KpiMini /> : <OtdrMini />}
+      {project.screenshot ? <img className="project-screenshot" src={project.screenshot} alt={`${project.title} screenshot`} /> : project.id === 'flask-traefik' ? <ArchitectureMini /> : <OtdrMini />}
       <span className="project-id">{project.eyebrow.split(' / ')[0]}</span>
     </div>
     <div className="project-card-body">
@@ -857,10 +851,6 @@ function ArchitectureMini() {
   return <div className="mini-diagram architecture-mini"><div className="mini-client">browser</div><div className="mini-arrow">→</div><div className="mini-proxy">traefik</div><div className="mini-arrow">→</div><div className="mini-backends"><span>flask 1</span><span>flask 2</span><span>flask 3</span></div></div>
 }
 
-function KpiMini() {
-  return <div className="mini-diagram kpi-mini"><div className="kpi-bars"><span style={{ height: '38%' }} /><span style={{ height: '62%' }} /><span style={{ height: '48%' }} /><span style={{ height: '80%' }} /><span style={{ height: '68%' }} /></div><div className="kpi-alert"><Zap size={13} /> early warning</div><div className="mini-grid-lines" /></div>
-}
-
 function OtdrMini() {
   return <div className="mini-diagram otdr-mini"><svg viewBox="0 0 300 120" fill="none" aria-hidden="true"><path d="M0 83C24 83 32 78 45 76C60 74 59 50 76 52C93 54 85 76 109 76C131 76 133 58 145 61C163 65 156 82 182 81C207 80 214 67 224 68C241 69 238 87 262 84C276 82 288 82 300 82" /><path className="trace-accent" d="M0 104H300" /></svg><span>conceptual OTDR trace</span></div>
 }
@@ -877,19 +867,11 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [onClose])
 
-  return <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}><div className="project-modal" role="dialog" aria-modal="true" aria-labelledby="project-modal-title"><button className="modal-close icon-button" type="button" onClick={onClose} aria-label="Close project details"><X size={18} /></button><div className="modal-intro"><span className="eyebrow">{project.eyebrow}</span><StatusBadge status={project.status} /><h2 id="project-modal-title">{project.title}</h2><p>{project.description}</p><div className="tag-list">{project.stack.map((item) => <span key={item}>{item}</span>)}</div></div>{project.screenshot && <img className="project-detail-image" src={project.screenshot} alt={`${project.title} supporting visual`} />}{project.id === 'flask-traefik' ? <ArchitectureDiagram /> : project.id === 'otdr-ftth-gpon' ? <OtdrDetail /> : <KpiDetail project={project} />}<div className="modal-columns"><div><h3>My contribution</h3><ul className="detail-list">{project.contributions.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul></div><div><h3>Key learning outcomes</h3><ul className="detail-list">{project.learnings.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul></div></div>{project.progressNote && <div className="editor-note modal-note"><CircleHelp size={15} /> {project.progressNote}</div>}<div className="modal-actions">{project.github ? <a className="small-button" href={project.github} target="_blank" rel="noreferrer"><Code2 size={14} /> GitHub repository</a> : <span className="missing-action"><Code2 size={14} /> Repository link not added</span>}{project.documentation ? <a className="small-button quiet" href={project.documentation} target="_blank" rel="noreferrer"><FileText size={14} /> Documentation</a> : null}{project.liveDemo ? <a className="small-button quiet" href={project.liveDemo} target="_blank" rel="noreferrer"><ExternalLink size={14} /> Live demo</a> : null}{project.socialPost ? <a className="small-button quiet" href={project.socialPost} target="_blank" rel="noreferrer"><ExternalLink size={14} /> Project post</a> : null}</div></div></div>
+  return <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}><div className="project-modal" role="dialog" aria-modal="true" aria-labelledby="project-modal-title"><button className="modal-close icon-button" type="button" onClick={onClose} aria-label="Close project details"><X size={18} /></button><div className="modal-intro"><span className="eyebrow">{project.eyebrow}</span><StatusBadge status={project.status} /><h2 id="project-modal-title">{project.title}</h2><p>{project.description}</p><div className="tag-list">{project.stack.map((item) => <span key={item}>{item}</span>)}</div></div>{project.screenshot && <img className="project-detail-image" src={project.screenshot} alt={`${project.title} supporting visual`} />}{project.id === 'flask-traefik' ? <ArchitectureDiagram /> : <OtdrDetail />}<div className="modal-columns"><div><h3>My contribution</h3><ul className="detail-list">{project.contributions.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul></div><div><h3>Key learning outcomes</h3><ul className="detail-list">{project.learnings.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul></div></div>{project.progressNote && <div className="editor-note modal-note"><CircleHelp size={15} /> {project.progressNote}</div>}<div className="modal-actions">{project.github ? <a className="small-button" href={project.github} target="_blank" rel="noreferrer"><Code2 size={14} /> GitHub repository</a> : <span className="missing-action"><Code2 size={14} /> Repository link not added</span>}{project.documentation ? <a className="small-button quiet" href={project.documentation} target="_blank" rel="noreferrer"><FileText size={14} /> Documentation</a> : null}{project.liveDemo ? <a className="small-button quiet" href={project.liveDemo} target="_blank" rel="noreferrer"><ExternalLink size={14} /> Live demo</a> : null}{project.socialPost ? <a className="small-button quiet" href={project.socialPost} target="_blank" rel="noreferrer"><ExternalLink size={14} /> Project post</a> : null}</div></div></div>
 }
 
 function ArchitectureDiagram() {
   return <div className="detail-diagram"><div className="diagram-heading"><span>System architecture</span><small>parallel backend targets</small></div><div className="architecture-flow"><div className="diagram-box browser-box"><HardDrive size={17} /><span>User / Browser</span></div><div className="diagram-connector vertical" /><div className="diagram-box proxy-box"><Router size={18} /><span>Traefik reverse proxy<br />& load balancer</span></div><div className="diagram-connector split" /><div className="backend-row">{['Flask 1', 'Flask 2', 'Flask 3'].map((item) => <div className="diagram-box backend-box" key={item}><Box size={16} /><span>{item}<small>container</small></span></div>)}</div></div></div>
-}
-
-function KpiDetail({ project }: { project: Project }) {
-  return <div className="detail-diagram kpi-detail"><div className="diagram-heading"><span>Planned data flow</span><small>editable as implementation progresses</small></div><div className="kpi-flow">{['Indicator registry', 'Target vs realization', 'Achievement %', 'Early warning'].map((step, index) => <div key={step}><span>0{index + 1}</span><strong>{step}</strong>{index < 3 && <ArrowRightLine />}</div>)}</div><p>{project.progressNote}</p></div>
-}
-
-function ArrowRightLine() {
-  return <span className="arrow-line"><span /></span>
 }
 
 function OtdrDetail() {

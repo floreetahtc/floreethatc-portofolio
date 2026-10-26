@@ -4,7 +4,6 @@ export type ProjectCategory =
   | 'Networking & Telecommunications'
   | 'Systems & Infrastructure'
   | 'Containerization & DevOps'
-  | 'Monitoring Systems'
 
 export type CertificateCategory =
   | 'Linux & System Administration'
@@ -117,44 +116,24 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    id: 'kpi-monitoring',
-    eyebrow: '02 / Monitoring systems',
-    title: 'Rancang Bangun Sistem Monitoring KPI dengan Early Warning System pada TIF Regional Sumbagsel',
-    category: 'Monitoring Systems',
-    status: 'Planned',
-    summary: 'A planned monitoring system for organizing target and realization data and surfacing indicators that need attention.',
-    description:
-      'A planned or ongoing project to develop a KPI monitoring system that compares targets and realization values, calculates achievement percentages, and supports a configurable early warning mechanism.',
-    stack: ['Laravel', 'Docker', 'Docker Compose', 'Database to be selected'],
-    contributions: [
-      'Defining the data structure for indicators, segments, regional units, targets, and realization values.',
-      'Mapping the intended dashboard flow and early warning criteria before implementation.',
-    ],
-    learnings: [
-      'Translating operational data into a maintainable monitoring flow',
-      'Designing configurable thresholds instead of hard-coded outcomes',
-      'Planning a deployable Laravel and Docker architecture',
-    ],
-    progressNote: 'Project status is intentionally editable. Only implemented features should be marked as completed.',
-  },
-  {
     id: 'otdr-ftth-gpon',
-    eyebrow: '03 / Telecommunications',
-    title: 'OTDR Measurement Analysis for FTTH GPON Access Fiber',
+    eyebrow: '02 / Telecommunications',
+    title: 'ANALISIS HASIL PENGUKURAN KABEL ACCESS FIBER OPTIK MENGGUNAKAN OPTICAL TIME DOMAIN REFLECTOMETER (OTDR) PADA JARINGAN FIBER TO THE HOME (FTTH) DENGAN TEKNOLOGI GPON DI STO PALEMBANG CENTRUM (PGC)',
     category: 'Networking & Telecommunications',
     status: 'Technical documentation',
-    summary: 'Technical documentation on reading OTDR measurements in an FTTH GPON access fiber context.',
+    summary: 'Laporan kerja praktik tentang analisis hasil pengukuran kabel access fiber optik menggunakan OTDR pada jaringan FTTH dengan teknologi GPON di STO Palembang Centrum (PGC).',
     description:
-      'This documentation-focused project covers OTDR measurement fundamentals, event tables, event positions, attenuation, fiber characteristics, and how to read an OTDR trace. Illustrations are conceptual and are not presented as actual field measurements.',
-    stack: ['OTDR concepts', 'FTTH', 'GPON', 'Fiber optic documentation'],
+      'Laporan kerja praktik ini membahas analisis hasil pengukuran kabel access fiber optik menggunakan Optical Time Domain Reflectometer (OTDR) pada jaringan Fiber to the Home (FTTH) dengan teknologi GPON di STO Palembang Centrum (PGC). Ilustrasi pada portofolio bersifat konseptual dan tidak dipresentasikan sebagai hasil pengukuran lapangan.',
+    stack: ['OTDR', 'Fiber optic', 'FTTH', 'GPON', 'Technical documentation'],
     contributions: [
-      'Structured learning notes around OTDR event tables and trace interpretation.',
-      'Connected measurement concepts to the broader FTTH GPON access network path.',
+      'Menyusun laporan kerja praktik dengan fokus pada pengukuran kabel access fiber optik menggunakan OTDR.',
+      'Menganalisis hasil pengukuran dalam konteks jaringan FTTH dengan teknologi GPON di STO Palembang Centrum (PGC).',
+      'Mendokumentasikan pembahasan teknis access fiber optic secara terstruktur.',
     ],
     learnings: [
-      'How OTDR traces describe events along a fiber',
-      'Why distances and attenuation need source measurements before publication',
-      'How access-network components fit into a technical overview',
+      'Interpretasi dasar hasil pengukuran OTDR',
+      'Hubungan access fiber optic dengan jaringan FTTH dan GPON',
+      'Penyusunan dokumentasi teknis untuk kebutuhan kerja praktik',
     ],
   },
 ]
